@@ -27,26 +27,29 @@ public class Manager {
     public static void createStudent(ArrayList<Student> ls) {
         //if number of students greater than 10 ask user continue or not
         //loop until user input not duplicate
-
         while (true) {
             String id = InputString("id");
             if (!Validation.checkIdExist(ls, id)) {
                 // same id, same name
                 String name = ListById(ls, id).get(0).getStudentName();
                 System.err.println("Student name: " + name);
-                String semester = InputString("semester");
+                String semester = Validation.checkInputSemester();
                 if (!Validation.checkSemesterExist(ListById(ls, id), semester, id)) {
-
-                    String courseExist = null;
+//                    String courseExist = null;
                     // get course name value from List that have all record same Id
-                    for (int i = 0; i < ListById(ls, id).size(); i++) {
-                        if (ListById(ls, id).get(i).getSemester().equalsIgnoreCase(semester)) {
-                            courseExist = ListById(ls, id).get(i).getCourseName();
-                        }
-                    }
-                    System.err.println("Course name: " + courseExist);
-                    System.err.println("Student exist. Each Student has only 1 course each semester. Re-input");
-
+//                    String course = Validation.checkInputCourse();
+//                    for (int i = 0; i < ListById(ls, id).size(); i++) {
+////                            courseExist = ListById(ls, id).get(i).getCourseName();
+//                        while (ListById(ls, id).get(i).getCourseName().equalsIgnoreCase(course)) {
+//                            System.err.println("duplicate course, Re - input");
+//                            course = Validation.checkInputCourse();
+//                        }
+//                    }
+                    String course = Validation.InputCourseNotExisted(ListById(ls, id));
+//                    System.err.println("Course name: " + courseExist);
+//                    System.err.println("Student exist. Each Student has only 1 course each semester. Re-input");
+                    ls.add(new Student(id, name, semester, course));
+                    System.err.println("Add student success.");
                     return;
                 }
                 String course = Validation.checkInputCourse();
@@ -55,7 +58,7 @@ public class Manager {
                 return;
             }
             String name = InputString("name");
-            String semester = InputString("semester");
+            String semester = Validation.checkInputSemester();
             String course = Validation.checkInputCourse();
             ls.add(new Student(id, name, semester, course));
             System.err.println("Add student success.");
@@ -115,7 +118,6 @@ public class Manager {
             if (Validation.checkInputUD()) {
                 //?
                 if (!Validation.checkIdExist(ls, id)) {
-
                     System.out.println("What you want to change?");
                     System.out.println("1. Name");
                     System.out.println("2. Semester");
@@ -138,16 +140,15 @@ public class Manager {
                             System.out.println("Enter Numer of Record you want to update");
                             int choiceRecordsemester = Validation.checkInputIntLimit(1, listStudentSameId.size());
                             String semester = listStudentSameId.get(choiceRecordsemester - 1).getSemester();
-                            semester = InputString("semester");
+                            semester = Validation.checkInputSemester();
                             ls.get(ls.indexOf(listStudentSameId.get(choiceRecordsemester - 1))).setSemester(semester);
                             listStudentSameId.get(choiceRecordsemester - 1).setSemester(semester);
-
                             break;
                         case 3:
                             System.out.println("Enter Numer of Record you want to update");
                             int choiceRecordCourse = Validation.checkInputIntLimit(1, listStudentSameId.size());
                             String course = listStudentSameId.get(choiceRecordCourse - 1).getCourseName();
-                            course = Validation.checkInputCourse(); //check student exist or not
+                            course = Validation.InputCourseNotExisted(listStudentSameId); //check student exist or not
                             ls.get(ls.indexOf(listStudentSameId.get(choiceRecordCourse - 1))).setCourseName(course);
                             listStudentSameId.get(choiceRecordCourse - 1).setCourseName(course);
                             break;
@@ -168,7 +169,7 @@ public class Manager {
                     listStudentSameId1.printId();
                 }
                 System.err.println("Delete success.");
-            }
+            }      
         }
     }
 
@@ -263,7 +264,7 @@ public class Manager {
                         total++;
                     }
                 }
-                ListReport.add(student1.getStudentName()+ " " + student1.getCourseName()+ " " + total);
+                ListReport.add(student1.getStudentName() + " " + student1.getCourseName() + " " + total);
             }
         }
         copyReport.addAll(CountDupliStr(ListReport));
@@ -271,8 +272,8 @@ public class Manager {
             System.out.println(listSpecial);
         }
     }
-    
-        public static ArrayList CountDupliStr(ArrayList<String> ls) {
+
+    public static ArrayList CountDupliStr(ArrayList<String> ls) {
         ArrayList<String> Unique = new ArrayList<>();
         for (int i = 0; i < ls.size(); i++) {
             boolean existed = false;
@@ -287,5 +288,5 @@ public class Manager {
         }
         return Unique;
     }
-    
+
 }
